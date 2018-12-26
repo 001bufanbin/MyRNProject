@@ -6,50 +6,122 @@
  * @flow
  */
 
-import React, { Component } from 'react';
-import {
-  Platform, StyleSheet, Text, View,
-} from 'react-native';
+import { Navigation } from 'react-native-navigation';
+import registeScreens from './src/modules/index';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+// eslint-disable-next-line import/no-unresolved
+const tab1Icon = require('./src/resource/public/tabbar_home.png');
+// eslint-disable-next-line import/no-unresolved
+const tab2Icon = require('./src/resource/public/tabbar_buyCar.png');
+// eslint-disable-next-line import/no-unresolved
+const tab3Icon = require('./src/resource/public/tabbar_sellCar.png');
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n'
-    + 'Shake or press menu button for dev menu',
-});
+export default function start() {
+  registeScreens();
 
-type Props = {};
-export default class App extends Component<Props> {
-  dosth = () => {
-    console.log('ddd');
-  }
+  // Navigation.events().registerAppLaunchedListener(async () => {
+  //   Navigation.setRoot({
+  //     root: {
+  //       component: {
+  //         name: 'Home.HomeController',
+  //       },
+  //     },
+  //   });
+  // }
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-      </View>
-    );
-  }
+
+  Navigation.events().registerAppLaunchedListener(async () => {
+    Navigation.setRoot({
+      root: {
+        bottomTabs: {
+          id: 'BottomTabs',
+          children: [
+            {
+              stack: {
+                id: 'TAB1_ID',
+                children: [
+                  {
+                    component: {
+                      name: 'Home.HomeController',
+                      passProps: {
+                        text: 'This is tab 1',
+                        myFunction: () => 'Hello from a function!',
+                      },
+                      options: {
+                        topBar: {
+                          visible: true,
+                          animate: false,
+                          title: {
+                            text: 'React Native Navigation!',
+                          },
+                        },
+                        bottomTab: {
+                          text: '首页',
+                          icon: tab1Icon,
+                          selectedIcon: tab1Icon,
+                          testID: 'FIRST_TAB_BAR_BUTTON',
+                        },
+                      },
+                    },
+                  },
+                ],
+                options: {
+                  topBar: {
+                    visible: false,
+                  },
+                },
+              },
+            },
+            {
+              stack: {
+                children: [
+                  {
+                    component: {
+                      name: 'BuyCar.BuyCarController',
+                      passProps: {
+                        text: 'This is tab 2',
+                      },
+                    },
+                  },
+                ],
+                options: {
+                  bottomTab: {
+                    text: '买车',
+                    icon: tab2Icon,
+                    testID: 'SECOND_TAB_BAR_BUTTON',
+                  },
+                },
+              },
+            },
+            {
+              component: {
+                name: 'SellCar.SellCarController',
+                passProps: {
+                  text: 'This is tab 3',
+                  myFunction: () => 'Hello from a function!',
+                },
+                options: {
+                  topBar: {
+                    visible: true,
+                    animate: false,
+                  },
+                  bottomTab: {
+                    text: '卖车',
+                    icon: tab3Icon,
+                    selectedIcon: tab3Icon,
+                  },
+                },
+              },
+            },
+          ],
+          options: {
+            bottomTabs: {
+              titleDisplayMode: 'alwaysShow',
+              testID: 'BOTTOM_TABS_ELEMENT',
+            },
+          },
+        },
+      },
+    });
+  });
 }
